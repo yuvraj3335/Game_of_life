@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conway's Game of Life</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Conway's Game of Life</h1>
+  <!-- Dropdown to select grid size -->
+  <label for="gridSize">Select Grid Size:</label>
+  <select id="gridSize">
+    <option value="10">10 x 10</option>
+    <option value="20">20 x 20</option>
+    <option value="30">30 x 30</option>
+    <option value="40">40 x 40</option>
+    <option value="50" selected>50 x 50</option>
+  </select>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <div>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
