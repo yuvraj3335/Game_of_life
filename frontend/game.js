@@ -1,4 +1,3 @@
-// game.js
 export class Game {
     constructor(rows = 50, cols = 50) {
       this.cellWidth = 10;
@@ -12,12 +11,24 @@ export class Game {
       this.running = false;
     }
   
+    // Method to initialize grid with provided data from JSON
+    initializeFromJSON(jsonData) {
+      if (jsonData.rows && jsonData.cols && jsonData.grid) {
+        this.rows = jsonData.rows;
+        this.cols = jsonData.cols;
+        this.grid = jsonData.grid;
+        this.setCanvasSize(canvas);
+      } else {
+        console.error('Invalid JSON data');
+      }
+    }
+  
     createGrid(rows, cols) {
       const grid = [];
       for (let i = 0; i < rows; i++) {
         const row = [];
         for (let j = 0; j < cols; j++) {
-          row.push(Math.random() > 0.7 ? 1 : 0); // Random initial state
+          row.push(0); // Default state
         }
         grid.push(row);
       }

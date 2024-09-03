@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Game of Life</title>
+  <title>Game of Life</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1> Game of Life</h1>
-  <!-- Dropdown to select grid size -->
+  <h1>Game of Life</h1>
+
+  <!-- Button to start a new game -->
+
+
+  <!-- Configuration options -->
   <label for="gridSize">Select Grid Size:</label>
   <select id="gridSize">
     <option value="10">10 x 10</option>
@@ -18,11 +22,24 @@
     <option value="50" selected>50 x 50</option>
   </select>
 
+  <label for="cellWidth">Cell Width:</label>
   <input type="number" id="cellWidth" value="10" min="1" max="50">
+
+  <label for="cellHeight">Cell Height:</label>
   <input type="number" id="cellHeight" value="10" min="1" max="50">
+
+  <label for="liveColor">Live Cell Color:</label>
   <input type="color" id="liveColor" value="#000000">
+
+  <label for="deadColor">Dead Cell Color:</label>
   <input type="color" id="deadColor" value="#ffffff">
+
+  <label for="timeoutInterval">Timeout Interval (ms):</label>
   <input type="number" id="timeoutInterval" value="100" min="10" max="1000">
+
+  <!-- File input for loading grid data from a JSON file -->
+  <label for="loadJsonBtn">Load Grid from JSON:</label>
+  <input type="file" id="loadJsonBtn" accept=".json">
 
   <canvas id="gameCanvas"></canvas>
 
@@ -32,7 +49,6 @@
     <button id="saveBtn">Save</button>
     <button id="loadBtn">Load</button>
   </div>
-
   <span id="error" style="display: none; color: red;">Invalid grid size. Please select a size between 10 and 50.</span>
 
   <script type="module" src="game.js"></script>

@@ -1,4 +1,3 @@
-// ui.js
 import { Game } from './game.js';
 
 const game = new Game();
@@ -18,8 +17,15 @@ game.setCanvasSize(canvas);
 game.drawGrid(ctx);
 
 // Event listeners for buttons
-document.getElementById('startBtn').addEventListener('click', () => game.startGame(gameLoop));
-document.getElementById('stopBtn').addEventListener('click', () => game.stopGame());
+document.getElementById('startBtn').addEventListener('click', () => {
+    game.startGame(gameLoop);
+    document.getElementById('startBtn').disabled = true; // Disable the Start button
+  });
+  
+  document.getElementById('stopBtn').addEventListener('click', () => {
+    game.stopGame();
+    document.getElementById('startBtn').disabled = false; // Enable the Start button when stopped
+  });
 document.getElementById('saveBtn').addEventListener('click', saveGameState);
 document.getElementById('loadBtn').addEventListener('click', loadGameState);
 
@@ -62,6 +68,24 @@ deadColorInput.addEventListener('change', () => {
 
 timeoutIntervalInput.addEventListener('change', () => {
   game.timeoutInterval = parseInt(timeoutIntervalInput.value);
+});
+
+// Function to load grid configuration from a JSON file
+document.getElementById('loadJsonBtn').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const jsonData = JSON.parse(e.target.result);
+        game.initializeFromJSON(jsonData);
+        game.drawGrid(ctx);
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    };
+    reader.readAsText(file);
+  }
 });
 
 function gameLoop() {
