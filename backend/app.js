@@ -6,17 +6,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// API endpoint to save game state
+// API endpoint to save game state with additional metadata
 app.post('/save', async (req, res) => {
-  const { state } = req.body;
+  console.log(req.body); // Log the request body to debug
+  const { state, initialConfig, startTime, endTime } = req.body;
 
   // Ensure state is a JSON string
   const stateString = JSON.stringify(state);
 
   try {
     const result = await pool.query(
-      'INSERT INTO game_states (state) VALUES ($1) RETURNING *',
-      [stateString]
+      `INSERT INTO game_states (state, initial_config, creation_time, end_time)
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [stateString, JSON.stringify(initialConfig), startTime, endTime]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -25,13 +27,19 @@ app.post('/save', async (req, res) => {
   }
 });
 
+
 // API endpoint to load the latest game state
 app.get('/load', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT state FROM game_states ORDER BY created_at DESC LIMIT 1'
+      'SELECT state, initial_config, creation_time, end_time FROM game_states ORDER BY creation_time DESC LIMIT 1'
     );
-    res.status(200).json(result.rows[0] ? JSON.parse(result.rows[0].state) : null);
+    res.status(200).json(result.rows[0] ? {
+      state: JSON.parse(result.rows[0].state),
+      initialConfig: JSON.parse(result.rows[0].initial_config),
+      creationTime: result.rows[0].creation_time,
+      endTime: result.rows[0].end_time
+    } : null);
   } catch (error) {
     console.error('Error loading game state:', error);
     res.status(500).send('Server Error');
