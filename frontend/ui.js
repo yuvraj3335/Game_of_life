@@ -1,5 +1,3 @@
-// ui.js
-
 import {
     createGrid,
     setCanvasSize,
@@ -27,84 +25,109 @@ import {
   const deadColorInput = document.getElementById('deadColor');
   const timeoutIntervalInput = document.getElementById('timeoutInterval');
   const errorSpan = document.getElementById('error');
+  const newGameBtn = document.getElementById('newGameBtn');
+  
+  let gameId;  // Variable to store the unique game ID
   
   // Initialize canvas and grid
   setCanvasSize(canvas);
   drawGrid(ctx, grid);
   
   // Event listeners for buttons
+  newGameBtn.addEventListener('click', async () => {
+    const gridSize = parseInt(gridSizeInput.value);
+    const initialState = createGrid(gridSize, gridSize);
+  
+    try {
+      const response = await fetch('http://localhost:3000/new-game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gridSize, initialState })
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        gameId = data.game_id;  // Store the unique game ID
+        console.log('New game created with ID:', gameId);
+        
+        // Enable game controls
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = false;
+        document.getElementById('saveBtn').disabled = false;
+        document.getElementById('loadBtn').disabled = false;
+        
+        // Disable new game button
+        newGameBtn.disabled = true;
+      } else {
+        console.error('Failed to create new game:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating new game:', error);
+    }
+  });
+  
   document.getElementById('startBtn').addEventListener('click', () => startGame(gameLoop));
   document.getElementById('stopBtn').addEventListener('click', stopGame);
   document.getElementById('saveBtn').addEventListener('click', saveGameState);
   document.getElementById('loadBtn').addEventListener('click', loadGameState);
   
-  // Event listener for grid size input
-  gridSizeInput.addEventListener('change', () => {
-    const value = parseInt(gridSizeInput.value);
-    if (value >= 10 && value <= 50) {
-      rows = cols = value;
-      grid = createGrid(rows, cols);
-      setCanvasSize(canvas);
-      drawGrid(ctx, grid);
-      errorSpan.style.display = 'none'; // Hide error message
-    } else {
-      errorSpan.style.display = 'inline'; // Show error message
+  // Function to save the game state
+  async function saveGameState() {
+    if (!gameId) {
+      console.error('No game ID found. Cannot save game state.');
+      return;
     }
-  });
   
-  // Event listeners for configuration inputs
-  cellWidthInput.addEventListener('change', () => {
-    cellWidth = parseInt(cellWidthInput.value);
-    setCanvasSize(canvas);
-    drawGrid(ctx, grid);
-  });
+    try {
+      const response = await fetch('http://localhost:3000/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameId, state: grid })  // Include gameId
+      });
   
-  cellHeightInput.addEventListener('change', () => {
-    cellHeight = parseInt(cellHeightInput.value);
-    setCanvasSize(canvas);
-    drawGrid(ctx, grid);
-  });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Game state saved:', data);
+      } else {
+        console.error('Failed to save game state:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error saving game state:', error);
+    }
+  }
   
-  liveColorInput.addEventListener('change', () => {
-    liveColor = liveColorInput.value;
-    drawGrid(ctx, grid);
-  });
+  // Function to load the game state
+  async function loadGameState() {
+    if (!gameId) {
+      console.error('No game ID found. Cannot load game state.');
+      return;
+    }
   
-  deadColorInput.addEventListener('change', () => {
-    deadColor = deadColorInput.value;
-    drawGrid(ctx, grid);
-  });
+    try {
+      const response = await fetch(`http://localhost:3000/load?gameId=${gameId}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          grid = data;
+          drawGrid(ctx, grid);
+        } else {
+          console.log('No saved game state found.');
+        }
+      } else {
+        console.error('Failed to load game state:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error loading game state:', error);
+    }
+  }
   
-  timeoutIntervalInput.addEventListener('change', () => {
-    timeoutInterval = parseInt(timeoutIntervalInput.value);
-  });
-  
+  // Game loop function
   function gameLoop() {
     if (running) {
       grid = nextGridState(grid);
       drawGrid(ctx, grid);
       setTimeout(gameLoop, timeoutInterval);
-    }
-  }
-  
-  async function saveGameState() {
-    const response = await fetch('http://localhost:3000/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ state: grid })
-    });
-    const data = await response.json();
-    console.log('Game state saved:', data);
-  }
-  
-  async function loadGameState() {
-    const response = await fetch('http://localhost:3000/load');
-    const data = await response.json();
-    if (data) {
-      grid = data;
-      drawGrid(ctx, grid);
-    } else {
-      console.log('No saved game state found.');
     }
   }
   
