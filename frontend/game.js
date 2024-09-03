@@ -1,17 +1,88 @@
 // game.js
 
-export let cellWidth = 10;
-export let cellHeight = 10;
-export let liveColor = 'black';
-export let deadColor = 'white';
-export let timeoutInterval = 100;
-export let rows = 50;
-export let cols = 50;
-export let running = false;
+let cellWidth = 10;
+let cellHeight = 10;
+let liveColor = 'black';
+let deadColor = 'white';
+let timeoutInterval = 100;
+let rows = 50;
+let cols = 50;
+let running = false;
+let grid = createGrid(rows, cols);
 
-export let grid = createGrid(rows, cols);
+export function getCellWidth() {
+  return cellWidth;
+}
 
-export function createGrid(rows, cols) {
+export function getCellHeight() {
+  return cellHeight;
+}
+
+export function getLiveColor() {
+  return liveColor;
+}
+
+export function getDeadColor() {
+  return deadColor;
+}
+
+export function getTimeoutInterval() {
+  return timeoutInterval;
+}
+
+export function getRows() {
+  return rows;
+}
+
+export function getCols() {
+  return cols;
+}
+
+export function getRunning() {
+  return running;
+}
+
+export function getGrid() {
+  return grid;
+}
+
+export function setCellWidth(value) {
+  cellWidth = value;
+}
+
+export function setCellHeight(value) {
+  cellHeight = value;
+}
+
+export function setLiveColor(value) {
+  liveColor = value;
+}
+
+export function setDeadColor(value) {
+  deadColor = value;
+}
+
+export function setTimeoutInterval(value) {
+  timeoutInterval = value;
+}
+
+export function setRows(value) {
+  rows = value;
+}
+
+export function setCols(value) {
+  cols = value;
+}
+
+export function setRunning(value) {
+  running = value;
+}
+
+export function setGrid(value) {
+  grid = value;
+}
+
+function createGrid(rows, cols) {
   const grid = [];
   for (let i = 0; i < rows; i++) {
     const row = [];

@@ -1,19 +1,29 @@
+// ui.js
+
 import {
-    createGrid,
-    setCanvasSize,
-    drawGrid,
+    setCellWidth,
+    setCellHeight,
+    setLiveColor,
+    setDeadColor,
+    setTimeoutInterval,
+    setRows,
+    setCols,
+    setRunning,
+    setGrid,
+    getGrid,
+    getRows,
+    getCols,
+    getCellWidth,
+    getCellHeight,
+    getLiveColor,
+    getDeadColor,
+    getTimeoutInterval,
+    getRunning,
     nextGridState,
+    drawGrid,
+    setCanvasSize,
     startGame,
-    stopGame,
-    grid,
-    running,
-    rows,
-    cols,
-    cellWidth,
-    cellHeight,
-    liveColor,
-    deadColor,
-    timeoutInterval
+    stopGame
   } from './game.js';
   
   const canvas = document.getElementById('gameCanvas');
@@ -31,7 +41,7 @@ import {
   
   // Initialize canvas and grid
   setCanvasSize(canvas);
-  drawGrid(ctx, grid);
+  drawGrid(ctx, getGrid());
   
   // Event listeners for buttons
   newGameBtn.addEventListener('click', async () => {
@@ -82,7 +92,7 @@ import {
       const response = await fetch('http://localhost:3000/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameId, state: grid })  // Include gameId
+        body: JSON.stringify({ gameId, state: getGrid() })  // Include gameId
       });
   
       if (response.ok) {
@@ -109,8 +119,8 @@ import {
       if (response.ok) {
         const data = await response.json();
         if (data) {
-          grid = data;
-          drawGrid(ctx, grid);
+          setGrid(data);
+          drawGrid(ctx, getGrid());
         } else {
           console.log('No saved game state found.');
         }
@@ -124,10 +134,10 @@ import {
   
   // Game loop function
   function gameLoop() {
-    if (running) {
-      grid = nextGridState(grid);
-      drawGrid(ctx, grid);
-      setTimeout(gameLoop, timeoutInterval);
+    if (getRunning()) {
+      setGrid(nextGridState(getGrid()));
+      drawGrid(ctx, getGrid());
+      setTimeout(gameLoop, getTimeoutInterval());
     }
   }
   
