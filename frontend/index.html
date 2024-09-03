@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game of Life</title>
+  <title> Game of Life</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Game of Life</h1>
-
-  <!-- Button to start a new game -->
-  <button id="newGameBtn">New Game</button>
-
-  <!-- Configuration options -->
+  <h1> Game of Life</h1>
+  <!-- Dropdown to select grid size -->
   <label for="gridSize">Select Grid Size:</label>
   <select id="gridSize">
     <option value="10">10 x 10</option>
@@ -31,10 +27,10 @@
   <canvas id="gameCanvas"></canvas>
 
   <div>
-    <button id="startBtn" disabled>Start</button>
-    <button id="stopBtn" disabled>Stop</button>
-    <button id="saveBtn" disabled>Save</button>
-    <button id="loadBtn" disabled>Load</button>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
   </div>
 
   <span id="error" style="display: none; color: red;">Invalid grid size. Please select a size between 10 and 50.</span>
